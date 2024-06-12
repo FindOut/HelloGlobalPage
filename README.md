@@ -1,3 +1,9 @@
+# Atlassian Forge Global page Hello, world! app with additional Jira REST API calls
+This is intended to be a simple example of a Forge app that uses the Jira REST API to fetch data and display it on a Jira global page.
+The app does the 'hello, world', but also fetches available Jira filters and displays how many filters it found.
+
+Below follows the default content of this README:
+
 # Forge Hello World
 
 This project contains a Forge app written in JavaScript that displays `Hello World!` in a Jira global page.
