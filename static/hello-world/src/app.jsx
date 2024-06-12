@@ -25,6 +25,7 @@ function App() {
       );
       return totalResult;
     }
+    return totalResult;
   }
 
   async function getSomeFilters(maxResults, startAt) {
