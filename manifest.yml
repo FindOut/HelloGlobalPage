@@ -1,0 +1,25 @@
+modules:
+  jira:globalPage:
+    - key: helloglobalpage-hello-world-page
+      resource: main
+      resolver:
+        function: resolver
+      title: HelloGlobalPageDebug
+  function:
+    - key: resolver
+      handler: index.handler
+resources:
+  - key: main
+    path: static/hello-world/build
+    tunnel:
+      port: 8002
+permissions:
+  content:
+    styles:
+      - unsafe-inline
+  scopes:
+    - read:jira-work
+app:
+  runtime:
+    name: nodejs18.x
+  id: ari:cloud:ecosystem::app/327f4e74-b61a-4190-b990-0ac173b490a7
