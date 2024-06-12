@@ -6,29 +6,50 @@ function App() {
   const [data, setData] = useState(null);
   const [filters, setFilters] = useState(null);
 
-  async function getSomeFilters() {
+  async function getAllFilters() {
     const maxResults = 100;
-    const startAt = 0;
+    let startAt = 0;
+    let totalResult = await getSomeFilters(maxResults, startAt);
+    if (!totalResult.isLast) {
+      startAt = totalResult.startAt + maxResults;
+      while (true) {
+        const result = await getSomeFilters(maxResults, startAt);
+        totalResult.values.push(...result.values);
+        startAt = result.startAt + maxResults;
+        if (result.isLast) {
+          break;
+        }
+      }
+      console.log(
+        `+++ getAllFilters found ${totalResult.values.length} filters`
+      );
+      return totalResult;
+    }
+  }
+
+  async function getSomeFilters(maxResults, startAt) {
     let response;
     try {
       response = await requestJira(
         `/rest/api/3/filter/search?maxResults=${maxResults}&startAt=${startAt}`
       );
     } catch (error) {
-      console.error("Failed to fetch filters:", error);
+      throw new Error(
+        `Failed to fetch filters - startAt: ${startAt}, maxResults: ${maxResults}`
+      );
     }
     if (response.ok) {
       const result = await response.json();
-      console.log("Loaded filters #", result.total);
       return result;
     } else {
-      console.error("Failed to fetch filters:", response);
-      return null;
+      throw new Error(
+        `Failed to fetch filters - startAt: ${startAt}, maxResults: ${maxResults}`
+      );
     }
   }
 
   useEffect(() => {
-    getSomeFilters()
+    getAllFilters()
       .then((filters) => setFilters(filters))
       .catch(console.error);
   }, []);
@@ -42,7 +63,9 @@ function App() {
   return (
     <div>
       <div>{data ? data : "Loading text..."}</div>
-      <div>{filters ? `${filters.total} filters found` : "Loading filters..."}</div>
+      <div>
+        {filters ? `${filters.total} filters found` : "Loading filters..."}
+      </div>
     </div>
   );
 }
